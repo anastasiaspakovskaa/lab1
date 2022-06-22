@@ -4,21 +4,13 @@
 #include <windows.h>
 #include <conio.h>
 #include <codecvt>
+#include "Header.h"
 
-using namespace std;
-
-struct employee
-{
-	int num;
-	char name[10];
-	double hours;
-};
-
-void replace(string& str, const string& from, const string& to) {
+void replace(std::string& str, const std::string& from, const std::string& to) {
 	if (from.empty())
 		return;
-	string::size_type start_pos = 0;
-	while ((start_pos = str.find(from, start_pos)) != string::npos) {
+	std::string::size_type start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
 		str.replace(start_pos, from.length(), to);
 		start_pos += to.length();
 	}
@@ -26,16 +18,16 @@ void replace(string& str, const string& from, const string& to) {
 
 int main(int argc, char* argv[])
 {
-	string fileName;
+	std::string fileName;
 	int numberOfRecords;
 
-	cout << "Write name of bin file: ";
-	cin >> fileName;
-	cout << "Write number of records: ";
-	cin >> numberOfRecords;
+	std::cout << "Write name of bin file: ";
+	std::cin >> fileName;
+	std::cout << "Write number of records: ";
+	std:: cin >> numberOfRecords;
 
-	string path = argv[0];
-	cout << path;
+	std::string path = argv[0];
+	std::cout << path;
 	replace(path, "main.exe", "");
 
 	STARTUPINFO si;
@@ -43,8 +35,8 @@ int main(int argc, char* argv[])
 	ZeroMemory(&si, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
 
-	if (CreateProcess((LPCWSTR)wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(path + "creator.exe").c_str(),
-		(LPWSTR)wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(path + "creator.exe " + fileName + " " + to_string(numberOfRecords)).c_str(),
+	if (CreateProcess((LPCWSTR)std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path + "creator.exe").c_str(),
+		(LPWSTR)std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path + "creator.exe " + fileName + " " + std::to_string(numberOfRecords)).c_str(),
 		NULL, NULL, FALSE, NULL, NULL, NULL, &si, &piApp))
 	{
 		WaitForSingleObject(piApp.hProcess, INFINITE);
@@ -52,34 +44,34 @@ int main(int argc, char* argv[])
 		CloseHandle(piApp.hProcess);
 	}
 	else {
-		cout << "Process creator.exe not start";
-		cout << GetLastError();
+		std::cout << "Process creator.exe not start";
+		std::cout << GetLastError();
 		return 1;
 	}
 
-	fstream file_bin;
-	file_bin.open(fileName, ios::in | ios::binary);
+	std::fstream file_bin;
+	file_bin.open(fileName, std::ios::in | std::ios::binary);
 	employee emp;
 	while (!file_bin.eof()) {
 
 		file_bin.read((char*)&emp, sizeof(emp));
 		if (file_bin.eof()) break;
-		cout << emp.num << " " << emp.name << " " << emp.hours << "\n";
+		std::cout << emp.num << " " << emp.name << " " << emp.hours << "\n";
 	}
 
 	file_bin.close();
 
-	string fileNameTxt;
+	std::string fileNameTxt;
 	double salary;
 
-	cout << "\nWrite name of report file: ";
-	cin >> fileNameTxt;
-	cout << "Write salary: ";
-	cin >> salary;
+	std::cout << "\nWrite name of report file: ";
+	std::cin >> fileNameTxt;
+	std::cout << "Write salary: ";
+	std::cin >> salary;
 
 	ZeroMemory(&si, sizeof(STARTUPINFO));
-	if (CreateProcess((LPCWSTR)wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(path + "reporter.exe").c_str(),
-		(LPWSTR)wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(path + "reporter.exe " + fileName + " " + fileNameTxt + " " + to_string(salary)).c_str(),
+	if (CreateProcess((LPCWSTR)std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path + "reporter.exe").c_str(),
+		(LPWSTR)std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(path + "reporter.exe " + fileName + " " + fileNameTxt + " " + std::to_string(salary)).c_str(),
 		NULL, NULL, FALSE, NULL, NULL, NULL, &si, &piApp))
 	{
 		WaitForSingleObject(piApp.hProcess, INFINITE);
@@ -87,17 +79,17 @@ int main(int argc, char* argv[])
 		CloseHandle(piApp.hProcess);
 	}
 	else {
-		cout << "Process reporter.exe not start";
+		std::cout << "Process reporter.exe not start";
 		return 1;
 	}
 
-	fstream file_txt;
-	file_txt.open(fileNameTxt, ios::in);
-	string line;
+	std::fstream file_txt;
+	file_txt.open(fileNameTxt, std::ios::in);
+	std::string line;
 	if (file_txt.is_open()) {
 		while (getline(file_txt, line))
 		{
-			cout << line << endl;
+			std::cout << line << std::endl;
 		}
 	}
 
